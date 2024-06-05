@@ -1,0 +1,28 @@
+const http = require('http');
+
+// Create an HTTP server
+const server = http.createServer((req, res) => {
+    // Log your name to the console
+    console.log('Your Name'); // Replace 'Your Name' with your actual name
+    
+    // Respond to the request
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Hello, your server is running and your name is logged!\n');
+});
+
+// Make the server listen on port 4000
+server.listen(4000, '127.0.0.1', () => {
+    console.log('Server running at http://127.0.0.1:4000/');
+});
+
+Save the file.
+
+Run the server by opening a terminal, navigating to the directory where server.js is located, and executing the following command:
+
+sh
+Copy code
+node server.js
+Access the server by opening a web browser and going to http://127.0.0.1:4000.
+When you visit this URL in your browser, the  name will be logged to the console, and we will see the message "Hello, your server is running and your name is logged!" in the browser.
+
