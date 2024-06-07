@@ -1,0 +1,13 @@
+class Student {
+    constructor(name, age, grades) {
+        this.name = name;
+        this.age = age;
+        this.grades = grades;
+    }
+}
+
+
+const student = new Student("John Doe", 20, [85, 90, 78]);
+console.log(`Name: ${student.name}, Age: ${student.age}, Grades: ${student.grades}`);
+
+output-Name: John Doe, Age: 20, Grades: 85,90,78
