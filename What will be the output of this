@@ -1,0 +1,31 @@
+1) const obj1 = {'key1': 1}
+
+const obj2 = { ...obj1}
+
+if(obj2 === obj1){
+
+console.log('same objects')
+
+}
+
+else{
+
+console.log('different objects')
+
+}
+output--  different objects
+reason -Since obj2 is a new object with the same properties as obj1, they are not the same object in memory. The === operator checks for reference equality, not just value equality.
+
+
+2) const obj1 = {'key1': 1 , 'key2' : 2}
+
+const obj2 = { ...obj1, key1: 1000}
+
+
+
+console.log(obj1)
+
+console.log(obj2)
+
+output-{ key1: 1, key2: 2 }
+{ key1: 1000, key2: 2 }
