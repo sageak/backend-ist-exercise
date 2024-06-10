@@ -1,0 +1,83 @@
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const server = http.createServer((req, res) => {
+    const url = req.url;
+    const method = req.method;
+
+    if (url === '/') {
+        // Read the messages from the file
+        fs.readFile('messages.txt', 'utf8', (err, data) => {
+            if (err && err.code !== 'ENOENT') {
+                console.error(err);
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'text/html');
+                res.write('<html>');
+                res.write('<head><title>Error</title></head>');
+                res.write('<body><h1>Server Error</h1></body>');
+                res.write('</html>');
+                return res.end();
+            }
+
+            // Prepare messages to be displayed
+            const messages = data ? data.split('\n').filter(Boolean) : [];
+            let messageListHtml = messages.map(message => `<p>${message}</p>`).join('');
+
+            // Respond with HTML page and messages
+            res.setHeader('Content-Type', 'text/html');
+            res.write('<html>');
+            res.write('<head><title>Enter Message</title></head>');
+            res.write('<body>');
+            res.write(messageListHtml);
+            res.write('<form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form>');
+            res.write('</body>');
+            res.write('</html>');
+            res.end();
+        });
+        return;
+    }
+
+    if (url === '/message' && method === 'POST') {
+        const body = [];
+        req.on('data', (chunk) => {
+            body.push(chunk);
+        });
+        req.on('end', () => {
+            const parsedBody = Buffer.concat(body).toString();
+            const message = decodeURIComponent(parsedBody.split('=')[1]).replace(/\+/g, ' ');
+
+            // Append the new message to the file
+            fs.appendFile('messages.txt', message + '\n', (err) => {
+                if (err) {
+                    console.error(err);
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'text/html');
+                    res.write('<html>');
+                    res.write('<head><title>Error</title></head>');
+                    res.write('<body><h1>Server Error</h1></body>');
+                    res.write('</html>');
+                    return res.end();
+                }
+
+                // Redirect to the root URL after saving the message
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                res.end();
+            });
+        });
+        return;
+    }
+
+    // Default response
+    res.setHeader('Content-Type', 'text/html');
+    res.write('<html>');
+    res.write('<head><title>My First Page</title></head>');
+    res.write('<body><h1>Hello from my Node.js Server!</h1></body>');
+    res.write('</html>');
+    res.end();
+});
+
+server.listen(3000, () => {
+    console.log('Server is listening on port 3000');
+});
